@@ -5,3 +5,4 @@ https://github.com/Shreyanshi200/Realtime_Code_Editor/assets/120807907/10897a27-
 
 This is the demo video from where i followed this project.
 ![Screenshot (374)](https://github.com/Shreyanshi200/Realtime_Code_Editor/assets/120807907/dad0084e-2a3a-4670-beee-3be9656a8a9d)
+![Screenshot (381)](https://github.com/Shreyanshi200/Realtime_Code_Editor/assets/120807907/956937d6-cdb2-47c9-abbc-b02cdfdf2c65)
