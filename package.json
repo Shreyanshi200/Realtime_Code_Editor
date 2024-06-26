@@ -51,5 +51,5 @@
   "devDependencies": {
     "nodemon": "^2.0.22"
   },
-  "proxy": "http://localhost:5001"
+  "proxy": "https://realtime-code-editor-7l20.onrender.com/"
 }
