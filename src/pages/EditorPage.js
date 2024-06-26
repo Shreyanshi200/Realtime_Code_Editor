@@ -25,7 +25,8 @@ const EditorPage = () => {
     const init = async () => {
       
       socketRef.current = await initSocket();
-      
+      console.log("socket initialised");
+
       socketRef.current.on("connect_error", (err) => handleErrors(err));
       socketRef.current.on("connect_failed", (err) => handleErrors(err));
 
