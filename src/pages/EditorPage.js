@@ -3,7 +3,6 @@ import ACTIONS from "../Actions";
 import Client from "../components/Client";
 import Editor from "../components/Editor";
 import { initSocket } from "../socket";
-import logo from "../DNA.png"
 import {
   Navigate,
   useLocation,
@@ -23,10 +22,11 @@ const EditorPage = () => {
 
   useEffect(() => {
     const init = async () => {
-      
       socketRef.current = await initSocket();
       console.log("socket initialised");
-
+      socketRef.current.on("connect", () => {
+        console.log("Connected to server");
+      });
       socketRef.current.on("connect_error", (err) => handleErrors(err));
       socketRef.current.on("connect_failed", (err) => handleErrors(err));
 
@@ -35,14 +35,12 @@ const EditorPage = () => {
         toast.error("Socket connection failed, try again later.");
         reactNavigator("/");
       }
-      
+
       socketRef.current.emit(ACTIONS.JOIN, {
         roomId,
         username: location.state?.username,
-        
       });
-      
-      
+
       //Listening for joined event
       socketRef.current.on(
         ACTIONS.JOINED,
@@ -51,9 +49,7 @@ const EditorPage = () => {
             toast.success(`${username} joined the room.`);
             console.log(`${username} joined`);
           }
-          console.log(clients);
           setClients(clients);
-
           socketRef.current.emit(ACTIONS.SYNC_CODE, {
             code: codeRef.current,
             socketId,
@@ -78,7 +74,6 @@ const EditorPage = () => {
         chatWindow.scrollTop = chatWindow.scrollHeight;
       });
     };
-
     init();
     return () => {
       socketRef.current.off(ACTIONS.JOINED);
@@ -86,7 +81,7 @@ const EditorPage = () => {
       socketRef.current.off(ACTIONS.SEND_MESSAGE);
       socketRef.current.disconnect();
     };
-  });
+  }, []);
 
   async function copyRoomId() {
     try {
@@ -141,22 +136,21 @@ const EditorPage = () => {
     toast.loading("Running Code....");
 
     const encodedParams = new URLSearchParams();
-    encodedParams.set("LanguageChoice", lang);
-    encodedParams.set("Program", code);
-    encodedParams.set("Input", input);
-
+    encodedParams.append("LanguageChoice", lang);
+    encodedParams.append("Program", code);
+    encodedParams.append("Input", input);
     const options = {
       method: "POST",
       url: "https://code-compiler.p.rapidapi.com/v2",
       headers: {
         "content-type": "application/x-www-form-urlencoded",
-        "X-RapidAPI-Key": 'process.env.REACT_APP_API_KEY',
+        "X-RapidAPI-Key": process.env.REACT_APP_API_KEY,
         "X-RapidAPI-Host": "code-compiler.p.rapidapi.com",
       },
       data: encodedParams,
     };
 
-    //console.log(options);
+    console.log(options);
 
     axios
       .request(options)
@@ -203,7 +197,7 @@ const EditorPage = () => {
       <div className="asideWrap">
         <div className="asideInner">
           <div className="logo">
-            <img className="logoImage" src={logo} alt="logo" />
+            <img className="logoImage" src="/code-sync.png" alt="logo" />
           </div>
           <h3>Connected</h3>
           <div className="clientsList">
@@ -245,7 +239,7 @@ const EditorPage = () => {
       </div>
 
       <div className="editorWrap">
-      <Editor
+        <Editor
           socketRef={socketRef}
           roomId={roomId}
           onCodeChange={(code) => {
