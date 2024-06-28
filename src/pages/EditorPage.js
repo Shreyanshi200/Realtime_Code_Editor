@@ -156,7 +156,7 @@ const EditorPage = () => {
       data: encodedParams,
     };
 
-    console.log(options);
+    //console.log(options);
 
     axios
       .request(options)
